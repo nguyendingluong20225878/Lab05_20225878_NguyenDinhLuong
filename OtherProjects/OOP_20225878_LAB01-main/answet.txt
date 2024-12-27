@@ -1,0 +1,5 @@
++ What happens if users choose "Cancel":
+Khi người dùng chọn "Cancel" trong hộp thoại "Save and Launch", chương trình sẽ không tiếp tục chạy hoặc khởi động. Hộp thoại này yêu cầu người dùng xác nhận xem họ có muốn lưu các thay đổi đã thực hiện trên tệp mã nguồn trước khi chạy chương trình hay không. Nếu người dùng chọn "Cancel", điều đó có nghĩa là họ không muốn lưu và không muốn chạy chương trình. Do đó, quy trình chạy chương trình sẽ bị dừng lại, và các thay đổi trong tệp vẫn chưa được lưu.
++How to customize the options to users (e.g., only two options: "Yes" and "No", or "I do" and "I don't"):
+Để tùy chỉnh hộp thoại với các tùy chọn như "Yes" và "No" hoặc "I do" và "I don't", Java cung cấp phương thức để tạo hộp thoại tùy chỉnh bằng cách sử dụng 'JOptionPane'.
+Sử dụng String[] options = {"Tôi đồng ý", "Tôi không đồng ý"};.

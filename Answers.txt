@@ -1,0 +1,30 @@
+Lớp nào nên triển khai giao diện Comparable?
+=> Các lớp như Media, Track, DigitalVideoDisc, CompactDisc, và Book cần triển khai giao diện Comparable.
+
+Trong các lớp đó, phương thức compareTo() nên được triển khai như thế nào để phản ánh thứ tự mà chúng ta muốn?
+=> Chúng ta sẽ kiểm tra các đối số dựa trên thứ tự ưu tiên của chúng.
+
+Nếu sử dụng giao diện Comparable, chúng ta có thể có hai quy tắc sắp xếp cho các mục (theo tiêu đề rồi đến giá, hoặc theo giá rồi đến tiêu đề) không?
+=> Do giao diện Comparable chỉ sử dụng một phương thức so sánh, nên chúng ta không thể có hai quy tắc sắp xếp.
+
+Giả sử các DVD có quy tắc sắp xếp khác so với các loại phương tiện truyền thông khác, cụ thể là theo tiêu đề, rồi đến độ dài giảm dần, cuối cùng là giá. Làm cách nào để chỉnh sửa mã để cho phép điều này?
+
+public class Media implements Comparable<Media> {
+    @Override
+    public int compareTo(Media other) {
+        if (this instanceof DVD && other instanceof DVD) {
+            int titleComparison = this.getTitle().compareTo(other.getTitle());
+            if (titleComparison != 0) {
+                return titleComparison;
+            }
+            int lengthComparison = Integer.compare(other.getLength(), this.getLength());
+            if (lengthComparison != 0) {
+                return lengthComparison;
+            }
+            return Float.compare(this.getCost(), other.getCost());
+        } else {
+            // So sánh mặc định cho các loại phương tiện khác
+        }
+        return 0;
+    }
+}
