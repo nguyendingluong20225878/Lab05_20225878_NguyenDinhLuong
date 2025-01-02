@@ -22,7 +22,7 @@ public class Aims {
         initSetup();
 
         boolean exit = false;
-        // CLI 
+        // CLI
         while (!exit) {
             
             showMenu();

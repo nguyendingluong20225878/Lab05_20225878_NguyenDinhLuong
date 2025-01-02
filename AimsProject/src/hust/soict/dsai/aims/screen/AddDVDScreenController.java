@@ -41,69 +41,86 @@ public class AddDVDScreenController {
 
     private boolean allFieldsFilled = false;
 
-
     public AddDVDScreenController(Store store) {
-        super();
         this.store = store;
     }
 
     @FXML
     void btnSavePressed(ActionEvent event) {
-        String title = tfTitle.getText();
-        String category = tfCategory.getText();
-        String director = tfDirector.getText();
-        int length = 0;
-        try {
-            length = Integer.parseInt(tfLength.getText());
-        } catch (Exception e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to parse length!");
-            alert.setTitle("Wrong type");
-            alert.setHeaderText(null);
-            alert.showAndWait();
-            return;
+        DigitalVideoDisc dvd = createDVD();
+        if (dvd != null) {
+            store.addMedia(dvd);
+            clearFields();
+            showAlert("DVD has been added to the store!", "Success", Alert.AlertType.INFORMATION);
         }
-        float cost = 0.0f;
-        try {
-            cost = Float.parseFloat(tfCost.getText());
-        } catch (NumberFormatException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to parse cost!");
-            alert.setTitle("Wrong type");
-            alert.setHeaderText(null);
-            alert.showAndWait();
-            return;
-        }
-        DigitalVideoDisc DVD = new DigitalVideoDisc(title, category, director, length,cost);
-        store.addMedia(DVD);
-        tfTitle.clear();
-        tfCategory.clear();
-        tfDirector.clear();
-        tfLength.clear();
-        tfCost.clear();
-        Alert alert = new Alert(Alert.AlertType.INFORMATION, "DVD has been added to the strore!");
-        alert.setTitle("Success");
-        alert.setHeaderText(null);
-        alert.showAndWait();
     }
 
     @FXML
     void initialize() {
         btnSave.setDisable(true);
-        
+        addTextListeners();
+    }
+
+    private void addTextListeners() {
         tfTitle.textProperty().addListener((observable, oldValue, newValue) -> checkFieldsFilled());
         tfCategory.textProperty().addListener((observable, oldValue, newValue) -> checkFieldsFilled());
         tfDirector.textProperty().addListener((observable, oldValue, newValue) -> checkFieldsFilled());
         tfLength.textProperty().addListener((observable, oldValue, newValue) -> checkFieldsFilled());
         tfCost.textProperty().addListener((observable, oldValue, newValue) -> checkFieldsFilled());
-    }   
+    }
+
+    private DigitalVideoDisc createDVD() {
+        String title = tfTitle.getText();
+        String category = tfCategory.getText();
+        String director = tfDirector.getText();
+        int length = parseLength();
+        if (length == -1) return null;
+
+        float cost = parseCost();
+        if (cost == -1) return null;
+
+        return new DigitalVideoDisc(title, category, director, length, cost);
+    }
+
+    private int parseLength() {
+        try {
+            return Integer.parseInt(tfLength.getText());
+        } catch (NumberFormatException e) {
+            showAlert("Failed to parse length!", "Wrong type", Alert.AlertType.ERROR);
+            return -1;
+        }
+    }
+
+    private float parseCost() {
+        try {
+            return Float.parseFloat(tfCost.getText());
+        } catch (NumberFormatException e) {
+            showAlert("Failed to parse cost!", "Wrong type", Alert.AlertType.ERROR);
+            return -1;
+        }
+    }
+
+    private void showAlert(String content, String title, Alert.AlertType alertType) {
+        Alert alert = new Alert(alertType, content);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.showAndWait();
+    }
+
+    private void clearFields() {
+        tfTitle.clear();
+        tfCategory.clear();
+        tfDirector.clear();
+        tfLength.clear();
+        tfCost.clear();
+    }
 
     private void checkFieldsFilled() {
-        if (!tfTitle.getText().isEmpty() && !tfCategory.getText().isEmpty() && !tfDirector.getText().isEmpty() && !tfLength.getText().isEmpty() && !tfCost.getText().isEmpty()) {
-            allFieldsFilled = true;
-        } else {
-            allFieldsFilled = false;
-        }
+        allFieldsFilled = !tfTitle.getText().isEmpty() && 
+                           !tfCategory.getText().isEmpty() && 
+                           !tfDirector.getText().isEmpty() && 
+                           !tfLength.getText().isEmpty() && 
+                           !tfCost.getText().isEmpty();
         btnSave.setDisable(!allFieldsFilled);
     }
-    
-
 }
